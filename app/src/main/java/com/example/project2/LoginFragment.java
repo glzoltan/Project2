@@ -1,6 +1,7 @@
 package com.example.project2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -57,7 +58,8 @@ public class LoginFragment extends Fragment {
                 }
                 else
                 {
-
+                    Intent intent = new Intent(getActivity().getApplicationContext(), Main2Activity.class);
+                    startActivity(intent);
                 }
 
 

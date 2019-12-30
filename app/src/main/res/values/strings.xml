@@ -6,4 +6,8 @@
     <string name="password">Password</string>
     <string name="Username">User Name</string>
     <string name="confirm">Confirm your password</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

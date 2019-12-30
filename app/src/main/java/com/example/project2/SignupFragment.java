@@ -22,7 +22,8 @@ import android.widget.Toast;
  * Use the {@link SignupFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignupFragment extends Fragment { private Context context;
+public class SignupFragment extends Fragment {
+    private Context context;
     private DbHelper mydb;
     private EditText name, pwd1,pwd2;
     private Button login, signup;
