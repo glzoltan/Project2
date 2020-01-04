@@ -9,8 +9,10 @@ public class Movie {
     private String posterPath;
     @SerializedName("adult")
     private boolean adult;
-    @SerializedName("overview")
+    @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("overview")
+    private String overview;
     /*@SerializedName("genre_ids")
     private List<Integer> genreIds=new ArrayList<Integer>();*/
     @SerializedName("id")
@@ -31,6 +33,10 @@ public class Movie {
 
     public String getOriginalTitle() {
         return originalTitle;
+    }
+
+    public String getOverview() {
+        return overview;
     }
 
     public String getPosterPath() {

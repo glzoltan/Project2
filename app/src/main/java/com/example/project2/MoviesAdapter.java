@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +20,6 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
     private Context mContext;
     private List<Movie> movieList;
-
     public MoviesAdapter(Context mContext, List<Movie> movieList){
         this.mContext=mContext;
         this.movieList=movieList;
@@ -31,9 +32,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     @Override
     public void onBindViewHolder(final MoviesAdapter.MyViewHolder viewHolder, int i){
         viewHolder.title.setText(movieList.get(i).getOriginalTitle());
-        String vote = String.valueOf(movieList.get(i).getVoteAverage());
+        //String vote = String.valueOf(movieList.get(i).getVoteAverage());
         //viewHolder.userrating.setText();
-        Glide.with(mContext).load(movieList.get(i).getPosterPath()).placeholder(R.drawable.ic_home_black_24dp).into(viewHolder.thumbnail);
+        Glide.with(mContext).load(movieList.get(i).getPosterPath()).placeholder(R.drawable.ic_local_movies_black_24dp).into(viewHolder.thumbnail);
     }
     @Override
     public int getItemCount(){
@@ -44,21 +45,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         public ImageView thumbnail;
         public MyViewHolder(View view){
             super(view);
-            title = (TextView) view.findViewById(R.id.titleView);
+            title = (TextView) view.findViewById(R.id.movietitle);
            // userrating=(TextView)view.findViewById(R.id.ratingview);
             thumbnail = (ImageView)view.findViewById(R.id.thumbnail);
-            /*view.setOnClickListener(new View.OnClickListener(){
+            view.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     int pos = getAdapterPosition();
                     if(pos !=RecyclerView.NO_POSITION){
                         Movie clickedDataItem=movieList.get(pos);
-                        FragmentTransaction frag_trans = getFragmentManager().beginTransaction();
-                        frag_trans.replace(R.id.fragment_container,new SignupFragment());
-                        frag_trans.commit();
+                        Intent intent =new Intent(mContext,DetailActivity.class);
+                        intent.putExtra("original_title",movieList.get(pos).getOriginalTitle());
+                        intent.putExtra("overview",movieList.get(pos).getOverview());
+                        intent.putExtra("poster_path",movieList.get(pos).getPosterPath());
+                        intent.putExtra("vote_average",movieList.get(pos).getVoteAverage());
+                        intent.putExtra("release_date",movieList.get(pos).getReleaseDate());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
                     }
                 }
-            });*/
+            });
         }
     }
 }

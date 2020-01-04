@@ -52,14 +52,7 @@ public class HomeFragment extends Fragment {
         movieList = new ArrayList<>();
         /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         adapter = new MoviesAdapter(this.getActivity(),movieList);
-        /*if(getActivity().getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
-        {
-            recyclerView.setLayoutManager(new GridLayoutManager(context,2));
-        }
-        else
-        {
-            recyclerView.setLayoutManager(new GridLayoutManager(context,4));
-        }*/
+        //recyclerView.setLayoutManager(new GridLayoutManager(context,4));
         recyclerView.setLayoutManager(new GridLayoutManager(context,2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
