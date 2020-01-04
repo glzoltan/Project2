@@ -34,7 +34,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         viewHolder.title.setText(movieList.get(i).getOriginalTitle());
         //String vote = String.valueOf(movieList.get(i).getVoteAverage());
         //viewHolder.userrating.setText();
-        Glide.with(mContext).load(movieList.get(i).getPosterPath()).placeholder(R.drawable.ic_local_movies_black_24dp).into(viewHolder.thumbnail);
+        String image="https://image.tmdb.org/t/p/w500"+movieList.get(i).getPosterPath();
+        Glide.with(mContext).load(image).placeholder(R.drawable.ic_local_movies_black_24dp).into(viewHolder.thumbnail);
     }
     @Override
     public int getItemCount(){
@@ -55,6 +56,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     if(pos !=RecyclerView.NO_POSITION){
                         Movie clickedDataItem=movieList.get(pos);
                         Intent intent =new Intent(mContext,DetailActivity.class);
+                        intent.putExtra("movie_id",movieList.get(pos).getId());
                         intent.putExtra("original_title",movieList.get(pos).getOriginalTitle());
                         intent.putExtra("overview",movieList.get(pos).getOverview());
                         intent.putExtra("poster_path",movieList.get(pos).getPosterPath());

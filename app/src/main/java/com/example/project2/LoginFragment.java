@@ -2,6 +2,7 @@ package com.example.project2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ public class LoginFragment extends Fragment {
     private DbHelper mydb;
     private EditText name, pwd;
     private Button login, signup;
+    public static final String SHARED_PREFS="sharedPrefs";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,10 @@ public class LoginFragment extends Fragment {
                 }
                 else
                 {
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("username",username);
+                    editor.commit();
                     Intent intent = new Intent(getActivity().getApplicationContext(), Main2Activity.class);
                     startActivity(intent);
                 }
