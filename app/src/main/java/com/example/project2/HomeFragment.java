@@ -5,9 +5,11 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -36,6 +38,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
     private List<Movie> movieList;
+
+    private static final int PAGE_START = 1;
     public static final String LOG_TAG=MoviesAdapter.class.getName();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,8 @@ public class HomeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_home,container,false);
         //initViews();
         recyclerView=v.findViewById(R.id.recyclermovies);
+        //linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
         movieList = new ArrayList<>();
         /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         adapter = new MoviesAdapter(this.getActivity(),movieList);
@@ -78,6 +84,7 @@ public class HomeFragment extends Fragment {
                     List<Movie> movies =response.body().getResults();
                     recyclerView.setAdapter(new MoviesAdapter(getActivity().getApplicationContext(),movies));
                     recyclerView.smoothScrollToPosition(0);
+                    recyclerView.addOnScrollListener(onscrollListener);
 
                 }
 
@@ -91,6 +98,52 @@ public class HomeFragment extends Fragment {
         }catch(Exception e){
             Toast.makeText(getActivity(),"ERROR 3",Toast.LENGTH_SHORT).show();
         }
+    }
+    private boolean islastItemDisplaying(RecyclerView recyclerView){
+        if(recyclerView.getAdapter().getItemCount()!=0){
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            if(lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition==recyclerView.getAdapter().getItemCount()-1){
+                return true;
+            }
+        }
+        return false;
+    }
+    private RecyclerView.OnScrollListener onscrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(@NonNull final RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if(islastItemDisplaying(recyclerView)){
+                Toast.makeText(getActivity(),"Loading",Toast.LENGTH_SHORT).show();
+                Client Client = new Client();
+                Service apiService=Client.getClient().create(Service.class);
+                Call<MoviesResponse> call = apiService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+                call.enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                        List<Movie> movies =fetchResults(response);
+                        recyclerView.setAdapter(new MoviesAdapter(getActivity().getApplicationContext(),movies));
+                        recyclerView.smoothScrollToPosition(0);
+                        recyclerView.addOnScrollListener(onscrollListener);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                        Toast.makeText(getActivity(),"ERROR Fetching data",Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+        }
+    };
+    private List<Movie> fetchResults(Response<MoviesResponse> response) {
+        MoviesResponse topRatedMovies = response.body();
+        return topRatedMovies.getResults();
     }
 
 }

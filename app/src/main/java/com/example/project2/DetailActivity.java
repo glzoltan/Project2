@@ -48,9 +48,6 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite){
                         if(favorite){
-                            /*SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE).edit();
-                            editor.putBoolean("Favorite Added",true);
-                            editor.commit();*/
                             saveFavorite();
                             Toast toast = Toast.makeText(getApplicationContext() , "Added to favorite", Toast.LENGTH_SHORT);
                             toast.show();
@@ -66,9 +63,6 @@ public class DetailActivity extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext() , user, Toast.LENGTH_SHORT);
                             toast.show();
                             db.deleteFavourite(movie_id,user);
-                            /*SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE).edit();
-                            editor.putBoolean("Favorite Removed",true);
-                            editor.commit();*/
                             Toast toast2 = Toast.makeText(getApplicationContext() , "Removed", Toast.LENGTH_SHORT);
                             toast2.show();
                         }
@@ -81,12 +75,9 @@ public class DetailActivity extends AppCompatActivity {
         favorite = new Movie();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         String user = sharedPreferences.getString("username","");
-        Toast toast = Toast.makeText(getApplicationContext() , user, Toast.LENGTH_SHORT);
-        toast.show();
         int movie_id=getIntent().getExtras().getInt("movie_id");
         String rate=getIntent().getExtras().getString("vote_average");
         String pstr=getIntent().getExtras().getString("poster_path");
-        //Toast.makeText(this, pstr, Toast.LENGTH_SHORT).show();
         String dte=getIntent().getExtras().getString("release_date");
         favorite.setId(movie_id);
         favorite.setOriginalTitle(title.getText().toString().trim());
