@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.annotation.Nullable;
 
@@ -17,6 +19,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_USER ="USER";
     public static final String COLU_1="USER_NAME";
     public static final String COLU_2="PASSWORD";
+    public static final String COLU_3="IMAGE";
     public static  final String TABLE_FAVORITE="FAVORITE";
     public static  final String COLUMN_MOVIEID="MOVIEID";
     public static  final String COLUMN_USER="USER";
@@ -33,7 +36,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+ TABLE_USER+" ("+COLU_1+" TEXT PRIMARY KEY, "+COLU_2+" TEXT);");
+        db.execSQL("CREATE TABLE "+ TABLE_USER+" ("+COLU_1+" TEXT PRIMARY KEY, "+COLU_2+" TEXT, "+ COLU_3+" BLOB);");
         db.execSQL("CREATE TABLE "+ TABLE_FAVORITE+" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+COLUMN_MOVIEID+" INTEGER, "+COLUMN_USER+" TEXT,"+COLUMN_TITLE+" TEXT, "+
                 COLUMN_USERRATING+" TEXT, "+COLUMN_POSTER_PATH+" TEXT, "+COLUMN_OVERVIEW+ " TEXT, "+COLUMN_RELEASE_DATE+" TEXT);");
     }
@@ -63,6 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLU_1,name);
         contentValues.put(COLU_2,password);
+        contentValues.put(COLU_3,0);
         long result = db.insert(TABLE_USER,null,contentValues);
         if (result == -1)
             return  false;
@@ -82,6 +86,29 @@ public class DbHelper extends SQLiteOpenHelper {
             return true;
         }
 
+    }
+    public void addImage( String name, byte[] image){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLU_3, image);
+        db.update(TABLE_USER, contentValues, COLU_1+"='"+name+"'", null);
+    }
+    public Bitmap getImage(String name){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT "+COLU_3+" FROM "+ TABLE_USER + " WHERE "+ COLU_1+" = '"+name+"' and "+COLU_3+ " != 0",null);
+        res.moveToNext();
+        if (res.moveToFirst()){
+            byte[] imgByte = res.getBlob(0);
+            res.close();
+            return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+        }
+        return null;
+    }
+    public void changePassword(String name, String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLU_2,   password);
+        db.update(TABLE_USER, contentValues, COLU_1+"='"+name+"'", null);
     }
     public void addFavorite(Movie movie,String username){
         SQLiteDatabase db = this.getWritableDatabase();

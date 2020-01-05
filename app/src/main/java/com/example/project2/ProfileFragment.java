@@ -2,6 +2,7 @@ package com.example.project2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
@@ -31,8 +33,11 @@ import java.io.IOException;
  */
 public class ProfileFragment extends Fragment {
     private Context context;
-    Button selectImage;
+    Button selectImage,saveImage,savePassword;
     ImageView imageView;
+    DbHelper db;
+    EditText psd;
+    public static final String SHARED_PREFS="sharedPrefs";
     private int REQUEST_CODE=1;
 
     @Override
@@ -46,7 +51,22 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile,container,false);
         selectImage = v.findViewById(R.id.selectButton);
+        saveImage=v.findViewById(R.id.saveButton);
+        savePassword=v.findViewById(R.id.button2);
         imageView = v.findViewById(R.id.imageView2);
+        psd=v.findViewById(R.id.newpassEdit);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        String user = sharedPreferences.getString("username","");
+        db=new DbHelper(context);
+        Bitmap picture=db.getImage(user);
+        if(picture==null){
+            imageView.setImageResource(R.drawable.ic_person_black_24dp);
+        }
+        else
+        {
+            imageView.setImageBitmap(picture);
+        }
+
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +77,34 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
+        saveImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db=new DbHelper(context);
+                imageView.setDrawingCacheEnabled(true);
+                imageView.buildDrawingCache();
+                Bitmap bitmap = imageView.getDrawingCache();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,80,baos);
+                byte[] data = baos.toByteArray();
+                SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+                String user = sharedPreferences.getString("username","");
+                db.addImage(user,data);
+                Toast.makeText(getActivity(), "New Image Is Added!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        savePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db=new DbHelper(context);
+                String password=psd.getText().toString();
+                SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+                String user = sharedPreferences.getString("username","");
+                db.changePassword(user,password);
+                psd.setText("");
+                Toast.makeText(getActivity(), "New Password Is Added!", Toast.LENGTH_SHORT).show();
+            }
+        });
         return v;
     }
     @Override
@@ -73,6 +120,9 @@ public class ProfileFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+    public void addtodb(View view){
+
     }
 
 }
