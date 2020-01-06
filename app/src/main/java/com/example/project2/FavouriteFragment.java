@@ -51,7 +51,7 @@ public class FavouriteFragment extends Fragment {
         /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         adapter = new MoviesAdapter(this.getActivity(),movieList);
         //recyclerView.setLayoutManager(new GridLayoutManager(context,4));
-        recyclerView.setLayoutManager(new GridLayoutManager(context,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(context,1));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

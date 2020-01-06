@@ -9,4 +9,6 @@ public interface Service {
     Call<MoviesResponse> getPopularMovies(@Query("api_key") String apiKey);
     @GET("movie/top_rated")
     Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+    @GET("search/movie")
+    Call<MoviesResponse> searchMovie(@Query("api_key") String apiKey, @Query("query") String query);
 }

@@ -60,8 +60,6 @@ public class DetailActivity extends AppCompatActivity {
                             db=new DbHelper(DetailActivity.this);
                             SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                             String user = sharedPreferences.getString("username","");
-                            Toast toast = Toast.makeText(getApplicationContext() , user, Toast.LENGTH_SHORT);
-                            toast.show();
                             db.deleteFavourite(movie_id,user);
                             Toast toast2 = Toast.makeText(getApplicationContext() , "Removed", Toast.LENGTH_SHORT);
                             toast2.show();
